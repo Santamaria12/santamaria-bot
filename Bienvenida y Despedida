@@ -1,0 +1,7 @@
+client.on('group_join', (notification) => {
+    client.sendMessage(notification.id.remote, '¡Bienvenido al grupo!');
+});
+
+client.on('group_leave', (notification) => {
+    client.sendMessage(notification.id.remote, '¡Hasta luego!');
+});
