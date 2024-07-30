@@ -1,0 +1,6 @@
+client.on('message', message => {
+    if (message.body === '!menu') {
+        const media = MessageMedia.fromUrl('https://th.bing.com/th/id/OIG1.5c0YHcoyzqHv8cufyyWI?w=1024&h=1024&rs=1&pid=ImgDetMain');
+        client.sendMessage(message.from, media, { caption: 'Bienvenido al menú del Bot Santamaria' });
+    }
+});
