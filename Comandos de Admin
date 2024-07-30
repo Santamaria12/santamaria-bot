@@ -1,0 +1,6 @@
+client.on('message', message => {
+    if (message.body.startsWith('!ban ')) {
+        const number = message.body.split(' ')[1] + '@c.us';
+        client.removeParticipant(message.from, number);
+    }
+});
