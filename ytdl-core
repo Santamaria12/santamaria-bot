@@ -1,1 +1,16 @@
 npm install ytdl-core
+
+const ytdl = require('ytdl-core');
+
+client.on('message', async message => {
+    if (message.body.startsWith('!yt ')) {
+        const url = message.body.split(' ')[1];
+        if (ytdl.validateURL(url)) {
+            const info = await ytdl.getInfo(url);
+            const format = ytdl.chooseFormat(info.formats, { quality: '136' }); // 720p
+            message.reply(`Descargando: ${info.title}\n${format.url}`);
+        } else {
+            message.reply('URL no válida.');
+        }
+    }
+});
