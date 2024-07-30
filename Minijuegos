@@ -1,0 +1,22 @@
+client.on('message', message => {
+    if (message.body.startsWith('!ppt')) {
+        const choices = ['piedra', 'papel', 'tijera'];
+        const userChoice = message.body.split(' ')[1];
+        const botChoice = choices[Math.floor(Math.random() * choices.length)];
+        let result = '';
+
+        if (userChoice === botChoice) {
+            result = '¡Empate!';
+        } else if (
+            (userChoice === 'piedra' && botChoice === 'tijera') ||
+            (userChoice === 'papel' && botChoice === 'piedra') ||
+            (userChoice === 'tijera' && botChoice === 'papel')
+        ) {
+            result = '¡Ganaste!';
+        } else {
+            result = '¡Perdiste!';
+        }
+
+        message.reply(`Elegiste ${userChoice}, yo elegí ${botChoice}. ${result}`);
+    }
+});
