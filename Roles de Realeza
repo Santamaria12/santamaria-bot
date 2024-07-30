@@ -1,0 +1,21 @@
+// Asignar rol de realeza
+client.on('message', message => {
+    if (message.body.startsWith('!asignarRol')) {
+        const [command, role, target] = message.body.split(' ');
+        const userId = message.from;
+
+        db.get("SELECT role FROM users WHERE id = ?", [userId], (err, row) => {
+            if (err || !row || row.role !== 'Rey') {
+                return message.reply('No tienes permiso para asignar roles.');
+            }
+
+            const targetId = `${target}@c.us`;
+            db.run("UPDATE users SET role = ? WHERE id = ?", [role, targetId], (err) => {
+                if (err) {
+                    return message.reply('Error al asignar rol.');
+                }
+                message.reply(`Has asignado el rol de ${role} a ${target}.`);
+            });
+        });
+    }
+});
