@@ -1,0 +1,57 @@
+// Registrar usuario
+client.on('message', message => {
+    if (message.body === '!registrar') {
+        const userId = message.from;
+        db.run("INSERT INTO users (id, balance, rank, role) VALUES (?, ?, ?, ?)", [userId, 1000, 'Novato', 'Miembro'], (err) => {
+            if (err) {
+                return message.reply('Ya estás registrado.');
+            }
+            message.reply('¡Registro exitoso! Tienes 1000 monedas.');
+        });
+    }
+});
+
+// Ver balance y rango
+client.on('message', message => {
+    if (message.body === '!balance') {
+        const userId = message.from;
+        db.get("SELECT balance, rank, role FROM users WHERE id = ?", [userId], (err, row) => {
+            if (err || !row) {
+                return message.reply('No estás registrado.');
+            }
+            message.reply(`Tu balance es de ${row.balance} monedas. Tu rango es ${row.rank} y tu rol es ${row.role}.`);
+        });
+    }
+});
+
+// Subir de rango
+client.on('message', message => {
+    if (message.body === '!subirRango') {
+        const userId = message.from;
+        db.get("SELECT balance, rank FROM users WHERE id = ?", [userId], (err, row) => {
+            if (err || !row) {
+                return message.reply('No estás registrado.');
+            }
+
+            const ranks = ['Novato', 'Experto', 'Maestro', 'Gran Maestro', 'Leyenda'];
+            const currentRankIndex = ranks.indexOf(row.rank);
+            if (currentRankIndex === -1 || currentRankIndex === ranks.length - 1) {
+                return message.reply('No puedes subir más de rango.');
+            }
+
+            const newRank = ranks[currentRankIndex + 1];
+            const cost = (currentRankIndex + 1) * 500;
+
+            if (row.balance < cost) {
+                return message.reply('Fondos insuficientes para subir de rango.');
+            }
+
+            db.run("UPDATE users SET balance = balance - ?, rank = ? WHERE id = ?", [cost, newRank, userId], (err) => {
+                if (err) {
+                    return message.reply('Error al subir de rango.');
+                }
+                message.reply(`¡Felicidades! Ahora eres ${newRank}.`);
+            });
+        });
+    }
+});
